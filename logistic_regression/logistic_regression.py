@@ -14,10 +14,12 @@ class LogisticRegression:
         self.bias = 0
         self.w_0 = 0
         self.w_1 = 0
-        self.weights = [self.w_0, self.w_1]
+        self.weights = np.array([self.w_0, self.w_1])
+        self.learning_rate = 0.01
+        self.loss_history = []
 
         
-    def fit(self, X, y):
+    def fit(self, x: np.ndarray, y: np.ndarray):
         """
         Estimates parameters for the classifier
         
@@ -27,10 +29,26 @@ class LogisticRegression:
             y (array<m>): a vector of floats containing 
                 m binary 0.0/1.0 labels
         """
-        # TODO: Implement
-        raise NotImplemented()
+        
+        print(x.shape[1])
+        print(self.weights.shape[0])
+        if x.shape[0] != self.weights[0]:
+            x = self.prepare_data(x)
+        for epoch in range(10000):
+            prediction = self.predict(x)
+            y = np.array(y)
+            difference: np.ndarray = y-prediction
+            self.weights = self.weights + self.learning_rate * np.dot(difference.T, x)
+
+            self.bias = self.bias + self.learning_rate * (np.sum(y) - np.sum(prediction))
+
+            loss = binary_cross_entropy(y, prediction)
+            self.loss_history.append((loss, epoch))
+
+
+
     
-    def predict(self, x: np.ndarray):
+    def predict(self, x: np.ndarray) -> np.ndarray:
         """
         Generates predictions
         
@@ -44,12 +62,34 @@ class LogisticRegression:
             A length m array of floats in the range [0, 1]
             with probability-like predictions
         """
-        predictions = np.dot(x, self.weights)
+        predictions: np.ndarray = np.dot(x, self.weights.T)
         predictions += self.bias
         predictions = sigmoid(predictions)
         return predictions
         
+    @staticmethod      
+    def plot_xy_pairs(xy_pairs):
+        """
+        Plots x,y values from a list of (x,y) value pairs.
 
+        Parameters:
+        - xy_pairs: List of (x,y) tuples
+        """
+
+        # Unzip the x and y values
+        x_values, y_values = zip(*xy_pairs)
+
+        plt.figure(figsize=(10,6))
+        plt.scatter(x_values, y_values, color='blue', marker='o', label='Data Points')
+        plt.xlabel('Iterations')
+        plt.ylabel('Loss Values')
+        plt.title('Scatter Plot of X,Y Value Pairs')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+    
+    def prepare_data(self, x: np.ndarray):
+        
         
 # --- Some utility functions 
 
@@ -105,7 +145,6 @@ def sigmoid(x):
     """
     return 1. / (1. + np.exp(-x))
 
-        
 
 
 
@@ -117,4 +156,6 @@ if __name__ == "__main__":
     x = data[['x0', 'x1']]
     y = data[['y']]
     model = LogisticRegression()
+    print(model.predict(x))
+    model.fit(x,y)
     print(model.predict(x))
