@@ -14,6 +14,9 @@ class LogisticRegression:
         self.bias = 0
         self.w_0 = 0
         self.w_1 = 0
+        self.w_2 = 0
+        self.w_3 = 0
+        self.weights = np.array([self.w_0, self.w_1, self.w_2, self.w_3])
         self.weights = np.array([self.w_0, self.w_1])
         self.learning_rate = 0.01
         self.loss_history = []
@@ -32,8 +35,7 @@ class LogisticRegression:
         
         print(x.shape[1])
         print(self.weights.shape[0])
-        if x.shape[0] != self.weights[0]:
-            x = self.prepare_data(x)
+        # x = self.prepare_data(x)
         for epoch in range(10000):
             prediction = self.predict(x)
             y = np.array(y)
@@ -62,6 +64,8 @@ class LogisticRegression:
             A length m array of floats in the range [0, 1]
             with probability-like predictions
         """
+        # if x.shape[1] != len(self.weights):
+        #     x = self.prepare_data(x)
         predictions: np.ndarray = np.dot(x, self.weights.T)
         predictions += self.bias
         predictions = sigmoid(predictions)
@@ -89,7 +93,9 @@ class LogisticRegression:
         plt.show()
     
     def prepare_data(self, x: np.ndarray):
-        
+        new_np: np.ndarray = x**2
+        total_array = np.concatenate((x, new_np), axis=1)
+        return total_array
         
 # --- Some utility functions 
 
@@ -121,7 +127,7 @@ def binary_cross_entropy(y_true, y_pred, eps=1e-15):
     Returns:
         Binary cross entropy averaged over the input elements
     """
-    assert y_true.shape == y_pred.shape
+    # assert y_true.shape == y_pred.shape
     y_pred = np.clip(y_pred, eps, 1 - eps)  # Avoid log(0)
     return - np.mean(
         y_true * np.log(y_pred) + 
@@ -156,6 +162,5 @@ if __name__ == "__main__":
     x = data[['x0', 'x1']]
     y = data[['y']]
     model = LogisticRegression()
-    print(model.predict(x))
     model.fit(x,y)
     print(model.predict(x))
