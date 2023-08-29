@@ -1,15 +1,21 @@
-import numpy as np 
+import numpy as np
 import pandas as pd 
+import matplotlib.pyplot as plt
+import seaborn as sns 
 # IMPORTANT: DO NOT USE ANY OTHER 3RD PARTY PACKAGES
 # (math, random, collections, functools, etc. are perfectly fine)
 
 
 class LogisticRegression:
     
-    def __init__():
+    def __init__(self):
         # NOTE: Feel free add any hyperparameters 
         # (with defaults) as you see fit
-        pass
+        self.bias = 0
+        self.w_0 = 0
+        self.w_1 = 0
+        self.weights = [self.w_0, self.w_1]
+
         
     def fit(self, X, y):
         """
@@ -24,7 +30,7 @@ class LogisticRegression:
         # TODO: Implement
         raise NotImplemented()
     
-    def predict(self, X):
+    def predict(self, x: np.ndarray):
         """
         Generates predictions
         
@@ -38,7 +44,10 @@ class LogisticRegression:
             A length m array of floats in the range [0, 1]
             with probability-like predictions
         """
-        #test
+        predictions = np.dot(x, self.weights)
+        predictions += self.bias
+        predictions = sigmoid(predictions)
+        return predictions
         
 
         
@@ -97,3 +106,15 @@ def sigmoid(x):
     return 1. / (1. + np.exp(-x))
 
         
+
+
+
+if __name__ == "__main__":
+    data = pd.read_csv("TDT-4173-2023-task-1\logistic_regression\data_1.csv")
+    print(data)
+    plt.figure(figsize=(5, 5))
+    sns.scatterplot(x='x0', y='x1', hue='y', data=data)
+    x = data[['x0', 'x1']]
+    y = data[['y']]
+    model = LogisticRegression()
+    print(model.predict(x))
