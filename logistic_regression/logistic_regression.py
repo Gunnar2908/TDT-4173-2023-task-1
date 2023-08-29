@@ -38,8 +38,7 @@ class LogisticRegression:
             A length m array of floats in the range [0, 1]
             with probability-like predictions
         """
-        # TODO: Implement
-        raise NotImplemented()
+        #test
         
 
         
