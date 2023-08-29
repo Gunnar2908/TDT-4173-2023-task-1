@@ -6,12 +6,15 @@ import pandas as pd
 
 class KMeans:
     
-    def __init__():
+    def __init__(self, k=2, d=2):
         # NOTE: Feel free add any hyperparameters 
         # (with defaults) as you see fit
-        pass
+        self.k = k
+        self.centroids = np.random.rand(2, 2)
+        print(self.centroids)
+
         
-    def fit(self, X):
+    def fit(self, x: np.ndarray):
         """
         Estimates parameters for the classifier
         
@@ -19,10 +22,23 @@ class KMeans:
             X (array<m,n>): a matrix of floats with
                 m rows (#samples) and n columns (#features)
         """
-        # TODO: Implement
-        raise NotImplemented()
+        centroids = np.array
+        x_0 = x['x0']
+        x_1 = x['x1']
+        for i in range(x.shape[0]):
+            lowest_distance = 10000
+            for j in range(self.k):
+                distance = euclidean_distance([x_0[i], x_1[i]], self.centroids[j])
+                selected_j = 0
+                if distance < lowest_distance:
+                    lowest_distance = distance
+                    selected_j = j
+                #lagre punktet til en centroid
+                centroids = np.append(centroids, selected_j)
+        print(centroids)
+
     
-    def predict(self, X):
+    def predict(self, x: np.ndarray):
         """
         Generates predictions
         
@@ -38,8 +54,20 @@ class KMeans:
             there are 3 clusters, then a possible assignment
             could be: array([2, 0, 0, 1, 2, 1, 1, 0, 2, 2])
         """
-        # TODO: Implement 
-        raise NotImplemented()
+        centroids = np.array
+        x_0 = x['x0']
+        x_1 = x['x1']
+        for i in range(x.shape[0]):
+            lowest_distance = 10000
+            for j in range(self.k):
+                distance = euclidean_distance([x_0[i], x_1[i]], self.centroids[j])
+                selected_j = 0
+                if distance < lowest_distance:
+                    lowest_distance = distance
+                    selected_j = j
+                #lagre punktet til en centroid
+                centroids = np.append(centroids, selected_j)
+        return centroids
     
     def get_centroids(self):
         """
@@ -56,7 +84,7 @@ class KMeans:
             [xm_1, xm_2, ..., xm_n]
         ])
         """
-        pass
+        return self.centroids
     
     
     
@@ -155,3 +183,8 @@ def euclidean_silhouette(X, z):
     
     return np.mean((b - a) / np.maximum(a, b))
   
+if __name__ == '__main__':
+    data_1 = pd.read_csv('TDT-4173-2023-task-1\k_means\data_1.csv')
+    x = data_1[['x0', 'x1']]
+    model_1 = KMeans() # <-- Should work with default constructor  
+    model_1.fit(x)
